@@ -166,4 +166,4 @@ Pairs scoring at or above `MATCH_THRESHOLD` (70) are persisted as a `Match` docu
 
 ---
 
-*Document prepared for the LostLink project — Advanced Tinkering Programme (ATP), Anurag University.*
+*Document prepared for the LostLink project*
