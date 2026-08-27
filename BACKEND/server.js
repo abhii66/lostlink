@@ -13,11 +13,25 @@ dotenv.config();
 
 const app = express();
 
+const allowedOrigins = (process.env.CLIENT_URL || "http://localhost:5173")
+  .split(",")
+  .map((o) => o.trim());
+
+// Vercel mints a unique preview URL per deployment (e.g. lostlink-<hash>-<team>.vercel.app).
+// Match those in addition to the exact production URL(s) above.
+const vercelPreviewPattern = /^https:\/\/lostlink-[a-z0-9]+-abhii66s-projects\.vercel\.app$/;
+
 app.use(
   cors({
-    origin: process.env.CLIENT_URL || "http://localhost:5173",
+    origin: (origin, callback) => {
+      if (!origin) return callback(null, true); // non-browser requests (health checks, curl, etc.)
+      if (allowedOrigins.includes(origin) || vercelPreviewPattern.test(origin)) {
+        return callback(null, true);
+      }
+      return callback(new Error(`Origin ${origin} not allowed by CORS`));
+    },
     credentials: true,
-  }),
+  })
 );
 app.use(express.json());
 app.use(cookieParser());
